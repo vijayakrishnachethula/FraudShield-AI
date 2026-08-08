@@ -6,7 +6,7 @@ FraudShield AI is a production-style portfolio project for fraud detection, expl
 
 The goal of FraudShield AI is to provide an end-to-end fraud analysis platform built entirely with free tools and deployment options. The planned system combines classical machine learning, SHAP-based explainability, retrieval-augmented policy search, a LangGraph-driven multi-agent workflow, a FastAPI backend, and a Streamlit frontend.
 
-The current repository state includes the engineering foundation plus an EDA-only analysis phase for understanding the PaySim dataset before preprocessing or modeling. No training, feature engineering, API endpoints, dashboard code, agents, or RAG workflows are implemented yet.
+The current repository state includes the engineering foundation, exploratory data analysis, and a production-style shared preprocessing package. No model training, API endpoints, dashboard code, agents, or RAG workflows are implemented yet.
 
 ## Architecture
 
@@ -63,6 +63,9 @@ Detailed architecture references live under [docs](docs).
 - Exploratory data analysis package under `ml/eda/`
 - Generated EDA reports and plots under `reports/eda/`
 - Unit tests for loading and validation behaviors
+- Shared preprocessing and feature engineering package under `ml/preprocessing/`
+- Saved preprocessing artifacts and feature metadata under `artifacts/`
+- Preprocessing reports under `reports/preprocessing/`
 
 ## Folder Structure
 
@@ -84,6 +87,7 @@ FraudShield-AI/
 |-- rag/
 |-- reports/
 |-- scripts/
+|-- artifacts/
 |-- tests/
 `-- utils/
 ```
@@ -143,6 +147,70 @@ This generates:
 - `reports/eda/missing_values.csv`
 - `reports/eda/correlation.csv`
 - PNG plots in `reports/eda/plots/`
+
+## Preprocessing Workflow
+
+Run the reusable preprocessing build with:
+
+```bash
+python scripts/run_preprocessing.py
+```
+
+This will:
+
+- Validate the raw dataset
+- Perform stratified `70/15/15` train/validation/test splitting
+- Fit the single shared preprocessing pipeline on the training split only
+- Save reusable artifacts in `artifacts/`
+- Generate preprocessing reports in `reports/preprocessing/`
+
+## Preprocessing Package
+
+The shared preprocessing code lives in `ml/preprocessing/` and is intended to be reused by future training, SHAP explainability, FastAPI inference, LangGraph, Streamlit, and batch prediction flows.
+
+Key components:
+
+- `loader.py`: validated dataset loading
+- `validators.py`: schema checks, feature roles, and leakage exclusions
+- `transformers.py`: sklearn-compatible custom transformers
+- `split.py`: reusable stratified train/validation/test split logic
+- `preprocessing_pipeline.py`: shared sklearn `Pipeline` + `ColumnTransformer`
+- `artifacts.py`: persistence of the fitted pipeline and metadata
+- `feature_metadata.py`: structured saved metadata for downstream consumers
+
+## Engineered Features
+
+The preprocessing layer includes these engineered features:
+
+- `origin_balance_delta`
+- `destination_balance_delta`
+- `amount_to_origin_balance_ratio`
+- `amount_to_destination_balance_ratio`
+- `origin_balance_change`
+- `destination_balance_change`
+- `transaction_amount_log`
+- `is_high_value_transaction`
+- `zero_origin_balance`
+- `zero_destination_balance`
+- `balance_consistency_flag`
+- `transaction_type_frequency`
+- `account_drain_ratio`
+
+`transaction_type_encoded` is intentionally handled inside the shared `ColumnTransformer` with `OneHotEncoder` instead of being duplicated as a standalone engineered column.
+
+## Saved Artifacts
+
+The preprocessing phase saves:
+
+- `artifacts/preprocessing_pipeline.joblib`
+- `artifacts/encoders.joblib`
+- `artifacts/scalers.joblib`
+- `artifacts/feature_metadata.json`
+- `artifacts/feature_names.json`
+- `artifacts/categorical_columns.json`
+- `artifacts/numerical_columns.json`
+- `artifacts/excluded_columns.json`
+- `artifacts/target_column.json`
 
 ## Deployment Strategy
 

@@ -1,0 +1,6 @@
+{
+  "nameOrig": "Excluded from model inputs because it is a high-cardinality origin account identifier and would encourage memorization rather than generalizable behavior.",
+  "nameDest": "Excluded from model inputs because it is a high-cardinality destination account identifier and may leak entity identity.",
+  "isFlaggedFraud": "Excluded from model inputs because EDA showed it is strongly leakage-prone and nearly reveals the target directly.",
+  "transaction_type_encoded": "Handled inside the shared ColumnTransformer with OneHotEncoder instead of as a standalone engineered feature, which avoids duplicate logic and ordinal encoding artifacts."
+}

@@ -1,0 +1,68 @@
+"""Feature definitions and descriptions for preprocessing."""
+
+from __future__ import annotations
+
+
+def get_engineered_feature_definitions() -> dict[str, str]:
+    """Return human-readable definitions for engineered features."""
+    return {
+        "origin_balance_delta": (
+            "Difference between the origin account balance before and after the "
+            "transaction: oldbalanceOrg - newbalanceOrig."
+        ),
+        "destination_balance_delta": (
+            "Difference between the destination account balance after and before "
+            "the transaction: newbalanceDest - oldbalanceDest."
+        ),
+        "amount_to_origin_balance_ratio": (
+            "Transaction amount divided by the origin balance before the "
+            "transaction, with safe handling for zero balances."
+        ),
+        "amount_to_destination_balance_ratio": (
+            "Transaction amount divided by the destination balance before the "
+            "transaction, with safe handling for zero balances."
+        ),
+        "origin_balance_change": (
+            "Residual inconsistency at the origin account: amount minus "
+            "origin_balance_delta."
+        ),
+        "destination_balance_change": (
+            "Residual inconsistency at the destination account: amount minus "
+            "destination_balance_delta."
+        ),
+        "transaction_amount_log": "Natural log transform of amount using log1p.",
+        "is_high_value_transaction": (
+            "Binary flag indicating whether the amount is above the fitted 95th "
+            "percentile threshold from the training data."
+        ),
+        "zero_origin_balance": (
+            "Binary flag showing whether the origin account started with zero balance."
+        ),
+        "zero_destination_balance": (
+            "Binary flag showing whether the destination account started with zero "
+            "balance."
+        ),
+        "balance_consistency_flag": (
+            "Binary flag showing whether the origin and destination balance changes "
+            "are both numerically consistent with the transaction amount."
+        ),
+        "transaction_type_frequency": (
+            "Relative frequency of the transaction type learned from the training "
+            "data and reused during inference."
+        ),
+        "account_drain_ratio": (
+            "Share of the origin account balance represented by the transaction "
+            "amount after safe division handling."
+        ),
+    }
+
+
+def get_feature_exclusion_notes() -> dict[str, str]:
+    """Return requested feature items that are intentionally not materialized."""
+    return {
+        "transaction_type_encoded": (
+            "Handled inside the shared ColumnTransformer with OneHotEncoder instead "
+            "of as a standalone engineered feature, which avoids duplicate logic and "
+            "ordinal encoding artifacts."
+        )
+    }

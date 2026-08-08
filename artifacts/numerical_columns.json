@@ -1,0 +1,21 @@
+[
+  "step",
+  "amount",
+  "oldbalanceOrg",
+  "newbalanceOrig",
+  "oldbalanceDest",
+  "newbalanceDest",
+  "origin_balance_delta",
+  "destination_balance_delta",
+  "amount_to_origin_balance_ratio",
+  "amount_to_destination_balance_ratio",
+  "origin_balance_change",
+  "destination_balance_change",
+  "transaction_amount_log",
+  "is_high_value_transaction",
+  "zero_origin_balance",
+  "zero_destination_balance",
+  "balance_consistency_flag",
+  "transaction_type_frequency",
+  "account_drain_ratio"
+]
